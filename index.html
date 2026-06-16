@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TasteBite | Restaurant Reservation & Pre-Order System</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: #fefaf5;
+        }
+
+        /* Navbar */
+        .navbar {
+            background: #ffffff;
+            padding: 1rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #ff6b35;
+        }
+        .logo span {
+            color: #2d2d2d;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: #2d2d2d;
+            font-weight: 500;
+            cursor: pointer;
+            padding: 0.5rem 0;
+            transition: 0.3s;
+        }
+        .nav-link:hover, .nav-link.active {
+            color: #ff6b35;
+            border-bottom: 2px solid #ff6b35;
+        }
+
+        .cart-icon {
+            position: relative;
+            cursor: pointer;
+            font-size: 1.3rem;
+            color: #2d2d2d;
+        }
+        .cart-count {
+            position: absolute;
+            top: -8px;
+            right: -12px;
+            background: #ff6b35;
+            color: white;
+            border-radius: 50%;
+            padding: 2px 6px;
+            font-size: 0.7rem;
+            font-weight: bold;
+        }
+
+        .user-area {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .login-btn, .logout-btn {
+            background: #ff6b35;
+            color: white;
+            border: none;
+            padding: 0.5rem 1.2rem;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        .register-btn {
+            background: transparent;
+            border: 1px solid #ff6b35;
+            color: #ff6b35;
+            padding: 0.5rem 1.2rem;
+            border-radius: 25px;
+            cursor: pointer;
+        }
+        .welcome-text {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #ff6b35 0%, #ff8c5a 100%);
+            padding: 3rem 5%;
+            text-align: center;
+            color: white;
+        }
+        .hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 5%;
+        }
+
+        /* Categories & Search */
+        .menu-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        .categories {
+            display: flex;
+            gap: 0.8rem;
+            flex-wrap: wrap;
+        }
+        .category-btn {
+            background: #f0f0f0;
+            border: none;
+            padding: 0.5rem 1.2rem;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: 0.3s;
+            font-weight: 500;
+        }
+        .category-btn.active, .category-btn:hover {
+            background: #ff6b35;
+            color: white;
+        }
+        .search-box {
+            display: flex;
+            gap: 0.5rem;
+        }
+        .search-box input {
+            padding: 0.5rem 1rem;
+            border: 1px solid #ddd;
+            border-radius: 25px;
+            width: 250px;
+        }
+        .search-box button {
+            background: #ff6b35;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            color: white;
+            cursor: pointer;
+        }
+
+        /* Menu Grid - like TasteBite style */
+        .section-title {
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            color: #2d2d2d;
+        }
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.8rem;
+        }
+        .menu-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+        .menu-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        .menu-image {
+            height: 180px;
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+        }
+        .menu-info {
+            padding: 1rem;
+        }
+        .menu-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+        }
+        .menu-desc {
+            font-size: 0.8rem;
+            color: #888;
+            margin-bottom: 0.5rem;
+        }
+        .menu-price {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #ff6b35;
+        }
+        .add-btn {
+            background: #ff6b35;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 0.8rem;
+            font-weight: 500;
+            transition: 0.3s;
+        }
+        .add-btn:hover {
+            background: #e55a2b;
+        }
+
+        /* Cart Sidebar */
+        .cart-sidebar {
+            position: fixed;
+            right: -400px;
+            top: 0;
+            width: 380px;
+            height: 100%;
+            background: white;
+            box-shadow: -2px 0 20px rgba(0,0,0,0.1);
+            z-index: 1000;
+            transition: 0.3s;
+            padding: 1.5rem;
+            overflow-y: auto;
+        }
+        .cart-sidebar.open {
+            right: 0;
+        }
+        .cart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #ff6b35;
+        }
+        .close-cart {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            padding: 0.5rem;
+            border-bottom: 1px solid #eee;
+        }
+        .cart-total {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 2px solid #ff6b35;
+            font-weight: bold;
+        }
+        .checkout-btn {
+            background: #ff6b35;
+            width: 100%;
+            margin-top: 1rem;
+        }
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 999;
+            display: none;
+        }
+        .overlay.show {
+            display: block;
+        }
+
+        /* Orders Section */
+        .orders-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        .order-card {
+            background: white;
+            border-radius: 15px;
+            padding: 1rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            .cart-sidebar {
+                width: 100%;
+                right: -100%;
+            }
+            .menu-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="navbar">
+    <div class="logo">Taste<span>Bite</span></div>
+    <div class="nav-menu">
+        <a class="nav-link" data-page="home">Home</a>
+        <a class="nav-link active" data-page="menu">Menu</a>
+        <a class="nav-link" data-page="orders">My Orders</a>
+        <a class="nav-link admin-only" data-page="admin-menu" style="display:none">Manage Menu</a>
+        <a class="nav-link admin-only" data-page="admin-orders" style="display:none">Manage Orders</a>
+        <a class="nav-link admin-only" data-page="reports" style="display:none">Reports</a>
+    </div>
+    <div class="user-area">
+        <div class="cart-icon" id="cartIcon">
+            <i class="fas fa-shopping-cart"></i>
+            <span class="cart-count" id="cartCount">0</span>
+        </div>
+        <div id="authSection">
+            <button class="login-btn" id="showLoginBtn">Login</button>
+            <button class="register-btn" id="showRegisterBtn">Register</button>
+        </div>
+        <div id="userSection" style="display:none">
+            <span class="welcome-text" id="welcomeUser"></span>
+            <button class="logout-btn" id="logoutBtn">Logout</button>
+        </div>
+    </div>
+</div>
+
+<div class="hero">
+    <h1>Delicious Food, Perfect Service</h1>
+    <p>Pre-order your favorite dishes and reserve your table</p>
+</div>
+
+<div class="container" id="mainContent">
+    <!-- Dynamic content -->
+</div>
+
+<!-- Cart Sidebar -->
+<div class="overlay" id="cartOverlay"></div>
+<div class="cart-sidebar" id="cartSidebar">
+    <div class="cart-header">
+        <h3><i class="fas fa-shopping-cart"></i> Your Cart</h3>
+        <button class="close-cart" id="closeCartBtn">&times;</button>
+    </div>
+    <div id="cartItemsList"></div>
+    <div id="cartTotal" class="cart-total"></div>
+    <button class="add-btn checkout-btn" id="checkoutBtn">Place Pre-Order</button>
+</div>
+
+<script>
+    // ========== DATA ==========
+    let menuItems = [
+        { id: 1, name: "Margherita Pizza", price: 12.00, category: "Pizza", emoji: "🍕", description: "Fresh mozzarella, tomato sauce, basil" },
+        { id: 2, name: "Pepperoni Pizza", price: 13.50, category: "Pizza", emoji: "🍕", description: "Pepperoni, mozzarella, tomato sauce" },
+        { id: 3, name: "BBQ Chicken Pizza", price: 14.00, category: "Pizza", emoji: "🍕", description: "BBQ sauce, chicken, red onion" },
+        { id: 4, name: "Vegetarian Pizza", price: 11.50, category: "Pizza", emoji: "🍕", description: "Bell peppers, mushrooms, olives" },
+        { id: 5, name: "Hot & Spicy Burger", price: 10.99, category: "Main Course", emoji: "🍔", description: "Spicy patty, jalapenos, cheese" },
+        { id: 6, name: "Grilled Salmon", price: 16.50, category: "Main Course", emoji: "🐟", description: "Fresh salmon with lemon butter" },
+        { id: 7, name: "Caprese Salad", price: 8.50, category: "Starters", emoji: "🥗", description: "Tomato, mozzarella, basil" },
+        { id: 8, name: "Chocolate Lava Cake", price: 6.50, category: "Desserts", emoji: "🍫", description: "Warm chocolate with melted center" },
+        { id: 9, name: "Iced Latte", price: 4.50, category: "Drinks", emoji: "☕", description: "Espresso with cold milk" },
+        { id: 10, name: "Mango Mojito", price: 5.50, category: "Drinks", emoji: "🍹", description: "Fresh mango, mint, lime" }
+    ];
+
+    let users = [
+        { id: 1, username: "customer1", password: "pass", role: "customer" },
+        { id: 2, username: "admin", password: "admin123", role: "admin" }
+    ];
+    let orders = [];
+    let cart = [];
+    let currentUser = null;
+    let nextOrderId = 101;
+    let nextUserId = 3;
+    let currentPage = "menu";
+    let currentCategory = "All";
+
+    // Load/Save
+    function saveData() {
+        localStorage.setItem('tastebite_orders', JSON.stringify(orders));
+        localStorage.setItem('tastebite_menu', JSON.stringify(menuItems));
+        localStorage.setItem('tastebite_users', JSON.stringify(users));
+    }
+
+    function loadData() {
+        const storedOrders = localStorage.getItem('tastebite_orders');
+        const storedMenu = localStorage.getItem('tastebite_menu');
+        const storedUsers = localStorage.getItem('tastebite_users');
+        if (storedOrders) orders = JSON.parse(storedOrders);
+        if (storedMenu) menuItems = JSON.parse(storedMenu);
+        if (storedUsers) users = JSON.parse(storedUsers);
+        if (orders.length > 0) nextOrderId = Math.max(...orders.map(o => o.id)) + 1;
+        if (users.length > 0) nextUserId = Math.max(...users.map(u => u.id)) + 1;
+    }
+
+    // Cart functions
+    function updateCartCount() {
+        const total = cart.reduce((sum, i) => sum + i.quantity, 0);
+        document.getElementById('cartCount').innerText = total;
+    }
+
+    function addToCart(menuId) {
+        if (!currentUser) { alert("Please login first!"); return; }
+        const item = menuItems.find(i => i.id === menuId);
+        if (!item) return;
+        const existing = cart.find(c => c.menuId === menuId);
+        if (existing) {
+            existing.quantity++;
+        } else {
+            cart.push({ menuId: item.id, name: item.name, price: item.price, quantity: 1, emoji: item.emoji });
+        }
+        updateCartCount();
+        renderCartSidebar();
+        alert(`✅ ${item.name} added to cart!`);
+    }
+
+    function removeFromCart(menuId) {
+        cart = cart.filter(c => c.menuId !== menuId);
+        updateCartCount();
+        renderCartSidebar();
+    }
+
+    function updateQuantity(menuId, newQty) {
+        if (newQty <= 0) {
+            removeFromCart(menuId);
+        } else {
+            const item = cart.find(c => c.menuId === menuId);
+            if (item) item.quantity = newQty;
+            updateCartCount();
+            renderCartSidebar();
+        }
+    }
+
+    function renderCartSidebar() {
+        const cartItemsDiv = document.getElementById('cartItemsList');
+        const cartTotalDiv = document.getElementById('cartTotal');
+        if (!cartItemsDiv) return;
+        
+        if (cart.length === 0) {
+            cartItemsDiv.innerHTML = '<p style="text-align:center; color:#888;">Your cart is empty</p>';
+            cartTotalDiv.innerHTML = '';
+            return;
+        }
+        
+        cartItemsDiv.innerHTML = cart.map(item => `
+            <div class="cart-item">
+                <div>
+                    <strong>${item.emoji} ${escapeHtml(item.name)}</strong><br>
+                    <small>$${item.price.toFixed(2)} x ${item.quantity}</small>
+                </div>
+                <div>
+                    <button class="btn-sm" onclick="updateQuantity(${item.menuId}, ${item.quantity - 1})" style="background:#ff6b35; color:white; border:none; border-radius:50%; width:25px;">-</button>
+                    <span style="margin:0 8px;">${item.quantity}</span>
+                    <button class="btn-sm" onclick="updateQuantity(${item.menuId}, ${item.quantity + 1})" style="background:#ff6b35; color:white; border:none; border-radius:50%; width:25px;">+</button>
+                    <button onclick="removeFromCart(${item.menuId})" style="background:none; border:none; color:#ff6b35; margin-left:8px;"><i class="fas fa-trash"></i></button>
+                </div>
+            </div>
+        `).join('');
+        
+        const total = cart.reduce((sum, i) => sum + (i.price * i.quantity), 0);
+        cartTotalDiv.innerHTML = `<strong>Total: $${total.toFixed(2)}</strong>`;
+    }
+
+    function placeOrder() {
+        if (!currentUser) { alert("Please login first!"); return; }
+        if (cart.length === 0) { alert("Cart is empty!"); return; }
+        
+        const orderItems = cart.map(c => ({ menuId: c.menuId, name: c.name, price: c.price, quantity: c.quantity }));
+        const total = orderItems.reduce((sum, i) => sum + (i.price * i.quantity), 0);
+        const newOrder = {
+            id: nextOrderId++,
+            userId: currentUser.id,
+            items: orderItems,
+            status: "Pending",
+            createdAt: new Date().toISOString(),
+            total: total
+        };
+        orders.unshift(newOrder);
+        cart = [];
+        updateCartCount();
+        renderCartSidebar();
+        saveData();
+        alert(`✅ Order #${newOrder.id} placed successfully!`);
+        document.getElementById('cartSidebar').classList.remove('open');
+        document.getElementById('cartOverlay').classList.remove('show');
+        if (currentPage === 'orders') renderOrdersPage();
+    }
+
+    // Admin functions
+    function addMenuItem(name, price, category) {
+        if (!name || price <= 0) { alert("Invalid data"); return; }
+        const newId = Math.max(...menuItems.map(i => i.id)) + 1;
+        menuItems.push({ id: newId, name, price, category, emoji: "🍽️", description: "New item" });
+        saveData();
+        if (currentPage === 'menu') renderMenuPage();
+        if (currentPage === 'admin-menu') renderAdminMenuPage();
+    }
+
+    function deleteMenuItem(id) {
+        if (confirm("Delete this item?")) {
+            menuItems = menuItems.filter(i => i.id !== id);
+            saveData();
+            if (currentPage === 'menu') renderMenuPage();
+            if (currentPage === 'admin-menu') renderAdminMenuPage();
+        }
+    }
+
+    function updateOrderStatus(orderId, newStatus) {
+        const order = orders.find(o => o.id === orderId);
+        if (order) { order.status = newStatus; saveData(); renderAdminOrdersPage(); }
+    }
+
+    // ========== RENDER PAGES ==========
+    function renderMenuPage() {
+        let filtered = currentCategory === "All" ? menuItems : menuItems.filter(i => i.category === currentCategory);
+        const searchTerm = document.getElementById('searchInput')?.value.toLowerCase() || '';
+        if (searchTerm) filtered = filtered.filter(i => i.name.toLowerCase().includes(searchTerm));
+        
+        const categories = ["All", ...new Set(menuItems.map(i => i.category))];
+        
+        document.getElementById('mainContent').innerHTML = `
+            <div class="menu-controls">
+                <div class="categories">
+                    ${categories.map(cat => `<button class="category-btn ${currentCategory === cat ? 'active' : ''}" data-category="${cat}">${cat}</button>`).join('')}
+                </div>
+                <div class="search-box">
+                    <input type="text" id="searchInput" placeholder="Search food..." value="${searchTerm}">
+                    <button id="searchBtn"><i class="fas fa-search"></i></button>
+                </div>
+            </div>
+            <h2 class="section-title">Our Menu</h2>
+            <div class="menu-grid">
+                ${filtered.map(item => `
+                    <div class="menu-card">
+                        <div class="menu-image">${item.emoji}</div>
+                        <div class="menu-info">
+                            <div class="menu-title">${escapeHtml(item.name)}</div>
+                            <div class="menu-desc">${escapeHtml(item.description || 'Delicious dish')}</div>
+                            <div class="menu-price">$${item.price.toFixed(2)}</div>
+                            <button class="add-btn" onclick="addToCart(${item.id})"><i class="fas fa-cart-plus"></i> Add to Cart</button>
+                        </div>
+                    </div>
+                `).join('')}
+            </div>
+            ${filtered.length === 0 ? '<p style="text-align:center;">No items found</p>' : ''}
+        `;
+        
+        document.querySelectorAll('.category-btn').forEach(btn => {
+            btn.onclick = () => { currentCategory = btn.dataset.category; renderMenuPage(); };
+        });
+        document.getElementById('searchBtn')?.addEventListener('click', () => renderMenuPage());
+        document.getElementById('searchInput')?.addEventListener('keypress', (e) => { if(e.key === 'Enter') renderMenuPage(); });
+    }
+
+    function renderOrdersPage() {
+        const myOrders = orders.filter(o => o.userId === currentUser?.id);
+        document.getElementById('mainContent').innerHTML = `
+            <h2 class="section-title"><i class="fas fa-list-ul"></i> My Orders</h2>
+            <div class="orders-list">
+                ${myOrders.length === 0 ? '<p>You have no orders yet.</p>' : myOrders.map(order => `
+                    <div class="order-card">
+                        <div style="display:flex; justify-content:space-between;">
+                            <strong>Order #${order.id}</strong>
+                            <span class="status-${order.status.toLowerCase()}" style="background:${order.status==='Pending'?'#fff3e0':order.status==='Completed'?'#e0f7e8':'#ffe0e0'}; padding:4px 12px; border-radius:20px;">${order.status}</span>
+                        </div>
+                        <small>${new Date(order.createdAt).toLocaleString()}</small>
+                        <table style="width:100%; margin:10px 0;"><tr><th>Item</th><th>Qty</th><th>Price</th></tr>
+                        ${order.items.map(it => `<tr><td>${escapeHtml(it.name)}</td><td>${it.quantity}</td><td>$${it.price.toFixed(2)}</td>`).join('')}
+                        </table>
+                        <div><strong>Total: $${order.total.toFixed(2)}</strong></div>
+                        ${order.status === "Pending" ? `<button class="add-btn" style="background:#ccc; margin-top:10px;" onclick="cancelOrder(${order.id})">Cancel Order</button>` : ''}
+                    </div>
+                `).join('')}
+            </div>
+        `;
+    }
+
+    function cancelOrder(orderId) {
+        const order = orders.find(o => o.id === orderId);
+        if (order && order.status === "Pending") {
+            order.status = "Cancelled";
+            saveData();
+            renderOrdersPage();
+            alert(`Order #${orderId} cancelled.`);
+        }
+    }
+
+    function renderAdminMenuPage() {
+        document.getElementById('mainContent').innerHTML = `
+            <h2 class="section-title"><i class="fas fa-edit"></i> Manage Menu</h2>
+            <div style="background:#f9f9f9; padding:1rem; border-radius:15px; margin-bottom:1.5rem;">
+                <h3>Add New Item</h3>
+                <input type="text" id="newName" placeholder="Item Name" style="padding:8px; margin:5px;">
+                <input type="number" id="newPrice" placeholder="Price" step="0.01" style="padding:8px; margin:5px; width:100px;">
+                <input type="text" id="newCategory" placeholder="Category" style="padding:8px; margin:5px;">
+                <button class="add-btn" style="width:auto; padding:8px 20px;" onclick="addMenuItem(document.getElementById('newName').value, parseFloat(document.getElementById('newPrice').value), document.getElementById('newCategory').value)">Add Item</button>
+            </div>
+            <div class="menu-grid">
+                ${menuItems.map(item => `
+                    <div class="menu-card">
+                        <div class="menu-image">${item.emoji}</div>
+                        <div class="menu-info">
+                            <div class="menu-title">${escapeHtml(item.name)}</div>
+                            <div class="menu-price">$${item.price.toFixed(2)}</div>
+                            <div class="menu-desc">${item.category}</div>
+                            <button class="add-btn" style="background:#dc3545;" onclick="deleteMenuItem(${item.id})">Delete</button>
+                        </div>
+                    </div>
+                `).join('')}
+            </div>
+        `;
+    }
+
+    function renderAdminOrdersPage() {
+        document.getElementById('mainContent').innerHTML = `
+            <h2 class="section-title"><i class="fas fa-truck"></i> Manage Orders</h2>
+            <div class="orders-list">
+                ${orders.map(order => {
+                    const user = users.find(u => u.id === order.userId);
+                    return `<div class="order-card">
+                        <div><strong>Order #${order.id}</strong> - Customer: ${user?.username || 'Unknown'}</div>
+                        <small>${new Date(order.createdAt).toLocaleString()}</small>
+                        <table style="width:100%; margin:10px 0;"><tr><th>Item</th><th>Qty</th><th>Price</th></tr>
+                        ${order.items.map(it => `<tr><td>${escapeHtml(it.name)}</td><td>${it.quantity}</td><td>$${it.price.toFixed(2)}</td>`).join('')}
+                        </table>
+                        <div><strong>Total: $${order.total.toFixed(2)}</strong></div>
+                        <div style="margin-top:10px;">
+                            <select id="status-${order.id}">
+                                <option ${order.status === 'Pending' ? 'selected' : ''}>Pending</option>
+                                <option ${order.status === 'Completed' ? 'selected' : ''}>Completed</option>
+                                <option ${order.status === 'Cancelled' ? 'selected' : ''}>Cancelled</option>
+                            </select>
+                            <button class="add-btn" style="width:auto; margin-left:10px;" onclick="updateOrderStatus(${order.id}, document.getElementById('status-${order.id}').value)">Update</button>
+                        </div>
+                    </div>`;
+                }).join('')}
+            </div>
+        `;
+    }
+
+    function renderReportsPage() {
+        const completedOrders = orders.filter(o => o.status === "Completed");
+        const revenue = completedOrders.reduce((sum, o) => sum + o.total, 0);
+        document.getElementById('mainContent').innerHTML = `
+            <h2 class="section-title"><i class="fas fa-chart-line"></i> Reports</h2>
+            <div style="background:#f9f9f9; padding:1.5rem; border-radius:15px;">
+                <p><strong>Total Orders:</strong> ${orders.length}</p>
+                <p><strong>Completed Orders Revenue:</strong> $${revenue.toFixed(2)}</p>
+                <p><strong>Pending Orders:</strong> ${orders.filter(o => o.status === "Pending").length}</p>
+            </div>
+        `;
+    }
+
+    // ========== AUTH ==========
+    function registerUser(username, password) {
+        if (!username || !password) { alert("Please fill all fields"); return false; }
+        if (users.find(u => u.username === username)) { alert("Username exists!"); return false; }
+        users.push({ id: nextUserId++, username, password, role: "customer" });
+        saveData();
+        alert("Registration successful! You can now login.");
+        return true;
+    }
+
+    function loginUser(username, password) {
+        const user = users.find(u => u.username === username && u.password === password);
+        if (user) {
+            currentUser = { id: user.id, username: user.username, role: user.role };
+            document.getElementById('authSection').style.display = 'none';
+            document.getElementById('userSection').style.display = 'flex';
+            document.getElementById('welcomeUser').innerHTML = `<i class="fas fa-user"></i> ${user.username}`;
+            
+            const isAdmin = user.role === 'admin';
+            document.querySelectorAll('.admin-only').forEach(el => el.style.display = isAdmin ? 'inline-block' : 'none');
+            
+            currentPage = "menu";
+            renderMenuPage();
+            return true;
+        }
+        alert("Invalid credentials!");
+        return false;
+    }
+
+    function logout() {
+        currentUser = null;
+        cart = [];
+        updateCartCount();
+        document.getElementById('authSection').style.display = 'flex';
+        document.getElementById('userSection').style.display = 'none';
+        document.querySelectorAll('.admin-only').forEach(el => el.style.display = 'none');
+        showLoginModal();
+    }
+
+    function showLoginModal() {
+        document.getElementById('mainContent').innerHTML = `
+            <div style="max-width:450px; margin:2rem auto; background:white; border-radius:20px; padding:2rem; box-shadow:0 5px 20px rgba(0,0,0,0.1);">
+                <h2 style="text-align:center;">Welcome to TasteBite</h2>
+                <input type="text" id="loginUser" placeholder="Username" style="width:100%; padding:12px; margin:10px 0; border-radius:10px; border:1px solid #ddd;">
+                <input type="password" id="loginPass" placeholder="Password" style="width:100%; padding:12px; margin:10px 0; border-radius:10px; border:1px solid #ddd;">
+                <button class="add-btn" onclick="loginUser(document.getElementById('loginUser').value, document.getElementById('loginPass').value)" style="width:100%;">Login</button>
+                <hr style="margin:15px 0;">
+                <h4>Register New Account</h4>
+                <input type="text" id="regUser" placeholder="New Username" style="width:100%; padding:12px; margin:10px 0; border-radius:10px; border:1px solid #ddd;">
+                <input type="password" id="regPass" placeholder="New Password" style="width:100%; padding:12px; margin:10px 0; border-radius:10px; border:1px solid #ddd;">
+                <button class="btn-outline" style="width:100%; padding:12px; background:#ff6b35; color:white; border:none; border-radius:10px;" onclick="registerUser(document.getElementById('regUser').value, document.getElementById('regPass').value)">Register</button>
+                <p style="text-align:center; margin-top:15px; font-size:0.8rem;">Demo: customer1/pass | admin/admin123</p>
+            </div>
+        `;
+    }
+
+    // Navigation
+    function navigateTo(page) {
+        if (!currentUser && page !== 'home') { showLoginModal(); return; }
+        currentPage = page;
+        document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
+        event.target.classList.add('active');
+        
+        if (page === 'menu') renderMenuPage();
+        else if (page === 'orders') renderOrdersPage();
+        else if (page === 'admin-menu' && currentUser?.role === 'admin') renderAdminMenuPage();
+        else if (page === 'admin-orders' && currentUser?.role === 'admin') renderAdminOrdersPage();
+        else if (page === 'reports' && currentUser?.role === 'admin') renderReportsPage();
+        else renderMenuPage();
+    }
+
+    function escapeHtml(str) { return String(str).replace(/[&<>]/g, function(m){ if(m==='&') return '&amp;'; if(m==='<') return '&lt;'; if(m==='>') return '&gt;'; return m;}); }
+
+    // Make functions global for onclick
+    window.addToCart = addToCart;
+    window.removeFromCart = removeFromCart;
+    window.updateQuantity = updateQuantity;
+    window.placeOrder = placeOrder;
+    window.addMenuItem = addMenuItem;
+    window.deleteMenuItem = deleteMenuItem;
+    window.updateOrderStatus = updateOrderStatus;
+    window.cancelOrder = cancelOrder;
+    window.loginUser = loginUser;
+    window.registerUser = registerUser;
+    window.navigateTo = navigateTo;
+
+    // Event Listeners
+    document.getElementById('cartIcon').onclick = () => {
+        if (!currentUser) { alert("Please login first!"); return; }
+        renderCartSidebar();
+        document.getElementById('cartSidebar').classList.add('open');
+        document.getElementById('cartOverlay').classList.add('show');
+    };
+    document.getElementById('closeCartBtn').onclick = () => {
+        document.getElementById('cartSidebar').classList.remove('open');
+        document.getElementById('cartOverlay').classList.remove('show');
+    };
+    document.getElementById('cartOverlay').onclick = () => {
+        document.getElementById('cartSidebar').classList.remove('open');
+        document.getElementById('cartOverlay').classList.remove('show');
+    };
+    document.getElementById('checkoutBtn').onclick = placeOrder;
+    document.getElementById('showLoginBtn').onclick = showLoginModal;
+    document.getElementById('showRegisterBtn').onclick = showLoginModal;
+    document.getElementById('logoutBtn').onclick = logout;
+    
+    document.querySelectorAll('.nav-link').forEach(link => {
+        link.onclick = (e) => {
+            const page = link.dataset.page;
+            if (!currentUser && page !== 'home') { showLoginModal(); return; }
+            currentPage = page;
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+            link.classList.add('active');
+            if (page === 'menu') renderMenuPage();
+            else if (page === 'orders') renderOrdersPage();
+            else if (page === 'admin-menu' && currentUser?.role === 'admin') renderAdminMenuPage();
+            else if (page === 'admin-orders' && currentUser?.role === 'admin') renderAdminOrdersPage();
+            else if (page === 'reports' && currentUser?.role === 'admin') renderReportsPage();
+            else renderMenuPage();
+        };
+    });
+
+    loadData();
+    showLoginModal();
+</script>
+</body>
+</html>
